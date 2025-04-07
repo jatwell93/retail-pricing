@@ -196,13 +196,13 @@ class RetailPricingSystem:
                     new_price = np.floor(price) + 0.99
             else:
                 # Items $20+: round to nearest .99
-                dollars = np.floor(price)
-                cents = (price * 100) % 100
+                new_price = round(price + 0.01) - 0.01
                 
-                if cents >= 50:
-                    new_price = dollars + 0.99
-                else:
-                    new_price = (dollars - 1) + 0.99
+            # Store the final price
+            self.products_df.at[idx, 'final_price'] = max(new_price, self.min_price)
+    
+            # Store the final price
+            self.products_df.at[idx, 'final_price'] = max(new_price, self.min_price)
             
             # Store the final price
             self.products_df.at[idx, 'final_price'] = max(new_price, self.min_price)
