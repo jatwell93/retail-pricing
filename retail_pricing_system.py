@@ -7,7 +7,7 @@ class RetailPricingSystem:
     Simplified pricing management system for retail pharmacy products
     """
     
-    def __init__(self, target_margin=0.38, no_competitor_margin=0.45, min_price=2.99):
+    def __init__(self, target_margin=0.38, no_competitor_margin=0.45, min_price=0.99):
         """
         Initialize the pricing system with default parameters
         
