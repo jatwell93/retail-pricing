@@ -13,9 +13,9 @@ venv/
 env/
 
 # Excel files with test data
-#*.xlsx
-#*.xls
-#*.csv
+*.xlsx
+*.xls
+*.csv
 
 # IDE specific files
 .idea/

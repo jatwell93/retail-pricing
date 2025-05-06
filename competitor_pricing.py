@@ -6,7 +6,7 @@ def run(playwright):
     browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
-    page.goto("https://www.chemistwarehouse.com.au/shop-online/258/medicines")
+    page.goto("https://www.chemistwarehouse.com.au/shop-online/81/vitamins")
     # Need to do one for Blooms, DCO, and CDC
     
     all_products = []
@@ -35,14 +35,19 @@ def run(playwright):
                 price_element = product.query_selector(".product__price-current")
                 price = price_element.inner_text() if price_element else "Unknown"
                 
+                # Get RRP
+                price_element = product.query_selector(".product__price-discount")
+                rrp = price_element.inner_text() if price_element else "Unknown"
+                
                 product_data = {
                     "sku": sku,
                     "product_name": name,
-                    "competitor_price": price
+                    "competitor_price": price,
+                    "rrp": rrp
                 }
                 
                 page_products.append(product_data)
-                print(f"Product: {name} - Price: {price} - SKU: {sku}")
+                print(f"Product: {name} - Price: {price} - SKU: {sku} - RRP: {rrp}")
             except Exception as e:
                 print(f"Error processing a product: {e}")
         
@@ -70,21 +75,24 @@ def run(playwright):
             more_pages = False
     
     # Export to CSV
-    export_to_csv(all_products, "competitor_prices.csv")
+    export_to_csv(all_products, "competitor_prices_vitamins.csv")
     
     print(f"\nScraped a total of {len(all_products)} products.")
     browser.close()
 
 def export_to_csv(products, filename):
     with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = ["sku", "product_name", "competitor_price"]
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        fieldnames = ["sku", "product_name", "competitor_price", "rrp"]
+        # Create a CSV writer object
+        # Use DictWriter to write dictionaries to CSV
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames) 
         
         writer.writeheader()
         for product in products:
             # Clean the price string by removing the $ sign
             if product["competitor_price"] != "Unknown":
                 product["competitor_price"] = product["competitor_price"].replace('$', '')
+                product["rrp"] = product["rrp"].replace('$', '')
             writer.writerow(product)
     
     print(f"Exported data to {filename}")
